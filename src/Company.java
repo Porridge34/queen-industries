@@ -27,6 +27,88 @@ public class Company {
         return company;
     }
 
+    public static void adjustSalaryHelper(double change, Employee e) {
+        for (int i = 0; i < company.staff.size(); i++) {
+            if (company.staff.get(i).equals(e)) {
+                company.staff.get(i).changeSalary(change);
+            }
+        }
+    }
+
+    public static void addEmployee(Employee e) {
+        company.staff.add(e);
+    }
+
+    public static void removeEmployee(Employee e) {
+        company.staff.remove(e);
+    }
+
+    public void printOrganizationChart() {
+        System.out.println();
+        sortStaff();
+        if (staff.size() > 0) {
+            System.out.println("Queen Industries Organization Chart");
+
+            for (Employee director : staff) {
+                if (director.getTier() == 3) {
+                    System.out.println(" - " + director.getName() + ", " + director.getTitle());
+                    for (Employee manager: ((Director) director).getReports()) {
+                        if (manager.getTier() <= 1) {
+                            System.out.println("   - " + manager.getName() + ", " + manager.getTitle());
+                        } else {
+                            System.out.println("   - " + manager.getName() + ", " + manager.getTitle());
+                            for (Employee employee : ((Manager) manager).getReports()) {
+                                System.out.println("     - " + employee.getName() + ", " + employee.getTitle());
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public void sortStaff() {
+        List<Employee> tempStaff = new ArrayList<>();
+        int size = staff.size();
+        Employee first;
+        for (int x = 0; x < size; x++) {
+            first = staff.get(0);
+            for (Employee director : staff) {
+                if (director.getDepartment().compareTo(first.getDepartment()) < 0) first = director;
+            }
+            tempStaff.add(staff.get(staff.indexOf(first)));
+            staff.remove(first);
+        }
+        staff = tempStaff;
+    }
+
+    public void printEmployeeDetails(Employee e) {
+        System.out.println("Employee     : " + e.getName());
+        System.out.println("Department   : " + e.getDepartment());
+        System.out.println("Title        : " + e.getTitle());
+        System.out.println("Compensation : " + e.getCompensation());
+        System.out.println();
+    }
+
+    public Director getDirector(String director) {
+        for (Employee d : staff) {
+            if (d.getDepartment().equals(director) && d.getTier() == 3) {
+                return (Director) d;
+            }
+        }
+        return null;
+    }
+
+    public Employee getEmployee(String employee) {
+        for (Employee e : staff) {
+            if (e.getName().equals(employee)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     /*
      * Private constructor implementing the singleton pattern. DO NOT MODIFY.
      */
